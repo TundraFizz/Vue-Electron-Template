@@ -2,9 +2,9 @@ import Vue from "vue";
 import Router from "vue-router";
 import Vuex from "vuex";
 import VueCompositionApi from "@vue/composition-api";
-import App from "./App.vue";
-import Home from "./views/Home.vue";
-// import "./registerServiceWorker";
+import App from "./app.vue";
+import Home from "./views/home.vue";
+import About from "./views/about.vue";
 import {ipcRenderer} from "electron";
 
 Vue.use(Router);
@@ -23,10 +23,7 @@ const router = new Router({
   {
     path: "/about",
     name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ "./views/About.vue"),
+    component: About
   }]
 });
 
