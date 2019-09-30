@@ -3,7 +3,8 @@ import Router from "vue-router";
 import Vuex from "vuex";
 import VueCompositionApi from "@vue/composition-api";
 import App from "./app.vue";
-import Home from "./views/home.vue";
+import Main from "./views/main.vue";
+import Settings from "./views/settings.vue";
 import About from "./views/about.vue";
 import {ipcRenderer} from "electron";
 
@@ -17,8 +18,13 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [{
     path: "/",
-    name: "home",
-    component: Home,
+    name: "main",
+    component: Main,
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: Settings
   },
   {
     path: "/about",

@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div id="main">
     <img alt="Vue logo" src="../assets/logo.png">
 
     <hr>
@@ -79,3 +79,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+#main {
+  text-align: center;
+}
+</style>

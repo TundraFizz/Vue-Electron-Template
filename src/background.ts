@@ -1,6 +1,6 @@
 "use strict";
 
-import {app, protocol, BrowserWindow, ipcMain} from "electron";
+import {app, protocol, BrowserWindow, ipcMain, shell} from "electron";
 import {createProtocol, installVueDevtools} from "vue-cli-plugin-electron-builder/lib";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -13,8 +13,10 @@ protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true,
 
 function CreateWindow() {
   const windowConfig = {
-    width: 800,
-    height: 600,
+    width: 600,
+    height: 500,
+    frame: false,
+    resizable: true,
     webPreferences: {nodeIntegration: true}
   };
 
@@ -38,7 +40,7 @@ function CreateWindow() {
 
 app.on("window-all-closed", () => {
   // Quit when all windows are closed. On macOS it is common for applications and
-  // their  menu bar to stay active until the user quits explicitly with Cmd + Q
+  // their menu bar to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== "darwin") {
     app.quit();
   }
@@ -91,4 +93,14 @@ ipcMain.on("TestFunc1", (event, args) => {
   console.log(args);
   const sendToVue = "pong";
   event.sender.send("TestFunc1", sendToVue);
+});
+
+ipcMain.on("Quit", (event, args) => {
+  app.quit();
+  // const sendToVue = "pong";
+  // event.sender.send("TestFunc1", sendToVue);
+});
+
+ipcMain.on("OpenProjectInBrowser", (event, args) => {
+  shell.openExternal("https://github.com/TundraFizz/Vue-Electron-Template");
 });
