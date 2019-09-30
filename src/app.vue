@@ -18,10 +18,6 @@ export default {
       root.Send("Quit");
     }
 
-    root.On("TestFunc1", (res: any) => {
-      console.log(res);
-    });
-
     return {
       Quit
     };
@@ -30,6 +26,16 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  // Prevent dragging of images, links, and text selection
+  margin: 0;
+	cursor: default;
+  font-family: sans-serif;
+  -webkit-user-select: none;
+	-webkit-user-drag: none;
+	-webkit-app-region: no-drag;
+}
+
 #app {
   #titlebar {
     display: flex;
@@ -75,18 +81,5 @@ export default {
       }
     }
   }
-}
-
-body {
-  margin: 0;
-  font-family: sans-serif;
-}
-
-* {
-  // Prevent dragging of images, links, and text selection
-	-webkit-user-select: none;
-	-webkit-user-drag: none;
-	-webkit-app-region: no-drag;
-	cursor: default;
 }
 </style>

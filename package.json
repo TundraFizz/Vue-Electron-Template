@@ -1,5 +1,6 @@
 {
   "name": "electron-vue-template",
+  "productName": "Testing Product Name",
   "author": "Tundra Fizz",
   "description": "This is the description",
   "version": "0.1.0",

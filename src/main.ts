@@ -42,8 +42,11 @@ const store = new Vuex.Store({
 // Define basic functions that allow easy usage of reading and writing from the data store
 Vue.mixin({
   methods: {
-    Send: (value: any, data: any) => {
-      ipcRenderer.send(value, data);
+    Send: (value: any, args: any = null) => {
+      ipcRenderer.send("ipc", {
+        method: value,
+        data: args
+      });
     },
 
     On: (ipcName: string, Callback: (res: any) => void) => {

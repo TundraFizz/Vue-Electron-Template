@@ -1,6 +1,6 @@
 "use strict";
 
-import {app, protocol, BrowserWindow, ipcMain, shell} from "electron";
+import {app, protocol, BrowserWindow, ipcMain, shell, dialog} from "electron";
 import {createProtocol, installVueDevtools} from "vue-cli-plugin-electron-builder/lib";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -89,18 +89,40 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on("TestFunc1", (event, args) => {
-  console.log(args);
-  const sendToVue = "pong";
-  event.sender.send("TestFunc1", sendToVue);
-});
+const IPC: {[key: string]: any} = {
+  TestFunc1: (event: any, data: any) => {
+    event.sender.send("TestFunc1", "pong");
+  },
 
-ipcMain.on("Quit", (event, args) => {
-  app.quit();
-  // const sendToVue = "pong";
-  // event.sender.send("TestFunc1", sendToVue);
-});
+  Quit: (event: any, data: any) => {
+    app.quit();
+  },
 
-ipcMain.on("OpenProjectInBrowser", (event, args) => {
-  shell.openExternal("https://github.com/TundraFizz/Vue-Electron-Template");
+  OpenProjectInBrowser: (event: any, data: any) => {
+    shell.openExternal("https://github.com/TundraFizz/Vue-Electron-Template");
+  },
+
+  YoloSwag: (event: any, data: any) => {
+    const result = dialog.showMessageBoxSync({
+      type: "warning", // "none", "info", "error", "question" or "warning". On Windows, "question" displays the same icon as "info", unless you set an icon using the "icon" option. On macOS, both "warning" and "error" display the same warning icon
+      buttons: ["Left", "Middle", "Right"],
+      title: "Muh Title",
+      message: "Muh message",
+      detail: "This is the detail",
+      checkboxLabel: "checkboxLabel",
+      checkboxChecked: true,
+      // icon: ,
+    });
+
+    console.log(result);
+  }
+};
+
+ipcMain.on("ipc", (event, args) => {
+  try {
+    IPC[args.method](event, args.data);
+  } catch (error) {
+    console.log(error);
+    console.log(`${args.method}() is not a function`);
+  }
 });
