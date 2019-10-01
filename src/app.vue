@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
+  <!-- <div id="app" onload="Initialize()"> -->
+  <div id="app" onload="console.log('sdfhsdjkfhs')">
     <div id="titlebar">
       <router-link tag="div" class="button" draggable="false" to="/">Main</router-link>
       <router-link tag="div" class="button" draggable="false" to="/settings">Settings</router-link>
@@ -7,22 +8,84 @@
       <div class="quit" @click="Quit"><div class="x">X</div></div>
     </div>
 
+    <div>??? {{ state.singleInstanceLock }}</div>
+    <div @click="DoSomething">CLICK ME!</div>
+
     <router-view/>
   </div>
 </template>
 
 <script lang="ts">
+import {ref, reactive, onMounted, toRefs, provide, inject} from "@vue/composition-api";
+
 export default {
   setup(props: any, {root}: any) {
+    const that = this;
+
+    // root.$store.subscribe((mutation: any) => {
+    //   console.log("========================= mutation =========================");
+    //   console.log(mutation);
+    // });
+
+    provide("ThemeSymbol", "dark");
+
+    // setTimeout(ghsdjfdf, 2000);
+    // setTimeout(ghsdjfdf(that), 2000);
+
+    const state: any = reactive({
+      singleInstanceLock: null,
+    });
+
+    const asd: any = ref("Hello world!");
+    const stateAsRefs = toRefs(state);
+
+    onMounted(() => {
+      root.Send("Initialize");
+    });
+
+    function DoSomething() {
+      // provide["ThemeSymbol"] = "zzzzzzzzzzzz";
+      // alert("sdfjksdk");
+    }
+
+    // function Okay() {
+    //   return "Okay";
+    // }
+
     function Quit() {
       root.Send("Quit");
     }
 
+    root.On("Initialize", (res: any) => {
+      console.log("app.vue has been initialized");
+      console.log(res);
+      state.singleInstanceLock = res.singleInstanceLock;
+
+      console.log(root.Read("a"));
+      console.log(root.Read("b"));
+      console.log(root.Read("singleInstanceLock"));
+      root.Write("data", state.singleInstanceLock);
+      console.log(root.Read("singleInstanceLock"));
+    });
+
     return {
+      state,
+      DoSomething,
+      stateAsRefs,
+      asd,
+      // qwe: Okay(),
+      // Something,
       Quit
     };
+  },
+  provide: {
+    ThemeSymbol: "fjkksddff"
   }
 };
+
+// export function Something() {
+//   return "hi";
+// }
 </script>
 
 <style lang="scss">

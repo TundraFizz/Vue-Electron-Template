@@ -18,6 +18,7 @@
     "quotemark": [true, "double"],
     "trailing-comma": false,
     "no-string-literal": false,
-    "max-line-length": false
+    "max-line-length": false,
+    "object-literal-shorthand": false
   }
 }

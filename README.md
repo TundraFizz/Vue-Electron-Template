@@ -33,25 +33,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 https://electronjs.org/docs/all
 
 app.requestSingleInstanceLock()
-Get auto-updates to work
-new BrowserWindow([options])
-win.maximize()
-win.unmaximize()
-win.minimize()
-win.restore()
-win.setSize()
-win.setContentSize()
-win.setMinimumSize()
-win.setMaximumSize()
-win.setResizable()
-win.flashFrame()
-win.setSkipTaskbar()
-win.setKiosk()
-win.setProgressBar()
-win.setOverlayIcon()
-win.setHasShadow()
-win.setOpacity()
-win.setThumbarButtons()
 
 clipboard.readText()
 clipboard.writeText()
@@ -64,7 +45,11 @@ clipboard.readBuffer()
 clipboard.writeBuffer()
 clipboard.write()
 
-Code signing is a security technology that you use to certify that
+contents.openDevTools()
+contents.closeDevTools()
+contents.isDevToolsOpened()
+contents.isDevToolsFocused()
+contents.toggleDevTools()
 
 dialog.showOpenDialogSync()
 dialog.showOpenDialog()
@@ -99,6 +84,19 @@ downloadItem.getStartTime()
 
 globalShortcut.register()
 
+image.toPNG()
+image.toJPEG()
+image.toBitmap()
+image.getNativeHandle()
+image.isEmpty()
+image.getSize()
+image.setTemplateImage()
+image.isTemplateImage()
+image.crop()
+image.resize()
+image.getAspectRatio()
+image.addRepresentation()
+
 ipcRenderer.on()
 ipcRenderer.once()
 ipcRenderer.removeListener()
@@ -115,21 +113,7 @@ nativeImage.createFromBuffer()
 nativeImage.createFromDataURL()
 nativeImage.createFromNamedImage()
 
-image.toPNG()
-image.toJPEG()
-image.toBitmap()
-image.getNativeHandle()
-image.isEmpty()
-image.getSize()
-image.setTemplateImage()
-image.isTemplateImage()
-image.crop()
-image.resize()
-image.getAspectRatio()
-image.addRepresentation()
-
-Notification.isSupported()
-new Notification()
+notification.isSupported()
 notification.show()
 notification.close()
 
@@ -152,12 +136,25 @@ shell.beep()
 shell.writeShortcutLink()
 shell.readShortcutLink()
 
-contents.openDevTools()
-contents.closeDevTools()
-contents.isDevToolsOpened()
-contents.isDevToolsFocused()
-contents.toggleDevTools()
+win.maximize()
+win.unmaximize()
+win.minimize()
+win.restore()
+win.setSize()
+win.setContentSize()
+win.setMinimumSize()
+win.setMaximumSize()
+win.setResizable()
+win.flashFrame()
+win.setSkipTaskbar()
+win.setKiosk()
+win.setProgressBar()
+win.setOverlayIcon()
+win.setHasShadow()
+win.setOpacity()
+win.setThumbarButtons()
 
+Get auto-updates to work.
 Make a button to toggle devtools.
 My app's window/tray disappeared after a few minutes.
 The font looks blurry, what is this and what can I do?
@@ -169,3 +166,4 @@ KeyboardEvent Object extends Event
 Class: Tray
 Online/Offline Event Detection
 Checklist: Security Recommendations
+Code signing is a security technology that you use to certify that

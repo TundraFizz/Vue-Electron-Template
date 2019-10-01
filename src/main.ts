@@ -34,9 +34,16 @@ const router = new Router({
 });
 
 const store = new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {}
+  state: {
+    a: 123,
+    b: 456,
+    singleInstanceLock: null
+  },
+  mutations: {
+    data(state, a) {
+      state.singleInstanceLock = a;
+    }
+  }
 });
 
 // Define basic functions that allow easy usage of reading and writing from the data store
@@ -53,6 +60,14 @@ Vue.mixin({
       ipcRenderer.on(ipcName, (event: object, res: any) => {
         Callback(res);
       });
+    },
+
+    Read: function(key) {
+      return this.$store.state[key];
+    },
+
+    Write: function(key, val) {
+      this.$store.commit(key, val);
     }
   }
 });

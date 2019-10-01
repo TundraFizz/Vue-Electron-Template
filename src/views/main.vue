@@ -1,31 +1,9 @@
 <template>
   <div id="main">
-    <img alt="Vue logo" src="~@/assets/logo.png">
 
-    <hr>
-
-    <table border="1">
-      <tr>
-        <th>Column 1</th>
-        <th>Column 2</th>
-        <th>Column 3</th>
-      </tr>
-      <tr>
-        <td>Row 1 - a</td>
-        <td>Row 1 - b</td>
-        <td>Row 1 - c</td>
-      </tr>
-      <tr>
-        <td>Row 2 - a</td>
-        <td>Row 2 - b</td>
-        <td>Row 2 - c</td>
-      </tr>
-      <tr>
-        <td>Row 3 - a</td>
-        <td>Row 3 - b</td>
-        <td>Row 3 - c</td>
-      </tr>
-    </table>
+    <div>
+      singleInstanceLock: {{ state.singleInstanceLock }}
+    </div>
 
     <div id="example-1">
       <button @click="Increment">
@@ -48,18 +26,51 @@
       <input type="range" min="1" max="100" value="50" v-model="state.sliderValue" class="slider image">
       <div>{{ state.sliderValue }}</div>
     </div>
+
+    <hr>
+
+    <img alt="Vue logo" src="~@/assets/logo.png">
   </div>
 </template>
 
 <script lang="ts">
-import {reactive, computed} from "@vue/composition-api";
+import {reactive, computed, onMounted, inject, ref} from "@vue/composition-api";
+// import {Something} from "../app.vue";
+// import {ThemeSymbol} from "@/app.vue";
 
 export default {
   setup(props: any, {root}: any) {
+    // const theme = inject("ThemeSymbol");
+    console.log("setup in main.vue has begun");
+
+    // setInterval(() => {
+    //   console.log(theme);
+    // }, 500);
+
     const state: any = reactive({
+      singleInstanceLock: null,
       sliderValue: 50,
       count: 0,
       double: computed(() => state.count * 2)
+    });
+
+    onMounted(() => {
+      console.log("onMounted");
+      // console.log(asd);
+      // console.log(Something());
+      // console.log(A.setup.Okay();
+
+      // console.log(root.Read("a"));
+      // console.log(root.Read("b"));
+      // console.log(root.Read("singleInstanceLock"));
+    });
+
+    root.$store.subscribe((mutation: any) => {
+      console.log("========================= mutation =========================");
+      console.log(mutation);
+      state.singleInstanceLock = mutation.payload;
+      console.log(state.singleInstanceLock);
+      console.log("============================================================");
     });
 
     function InputRange(value: number) {

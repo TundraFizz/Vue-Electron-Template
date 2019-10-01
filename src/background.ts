@@ -1,12 +1,37 @@
 "use strict";
 
-import {app, protocol, BrowserWindow, ipcMain, shell, dialog} from "electron";
+import {app, protocol, BrowserWindow, ipcMain, shell, dialog, clipboard} from "electron";
 import {createProtocol, installVueDevtools} from "vue-cli-plugin-electron-builder/lib";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Keep a global reference of the window object. If you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null;
+
+const singleInstanceLock = app.requestSingleInstanceLock();
+console.log("===============================================");
+console.log(singleInstanceLock);
+console.log("===============================================");
+
+/*
+  if (!singleInstanceLock) {
+    app.quit();
+  } else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (myWindow) {
+        if (myWindow.isMinimized()) myWindow.restore()
+        myWindow.focus()
+      }
+    })
+
+    // Create myWindow, load the rest of the app, etc...
+    app.on('ready', () => {
+    })
+  }
+*/
+
+// event.sender.send("SingleInstanceLock", "singleInstanceLock");
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
@@ -54,6 +79,7 @@ app.on("activate", () => {
   }
 });
 
+// app.isReady()
 app.on("ready", async () => {
   // This method will be called when Electron has finished initialization and is ready
   // to create browser windows. Some APIs can only be used after this event occurs
@@ -90,7 +116,18 @@ if (isDevelopment) {
 }
 
 const IPC: {[key: string]: any} = {
+  Initialize: (event: any, data: any) => {
+    const initializationData = {
+      singleInstanceLock: singleInstanceLock
+    };
+
+    event.sender.send("Initialize", initializationData);
+  },
+
   TestFunc1: (event: any, data: any) => {
+    console.log("===========================================");
+    console.log(event);
+    console.log("===========================================");
     event.sender.send("TestFunc1", "pong");
   },
 
