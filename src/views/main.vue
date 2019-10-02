@@ -1,6 +1,96 @@
 <template>
   <div id="main">
 
+    <!-- <hr> -->
+
+    <div>
+      <div>
+        <button @click="AppQuit">app.quit()</button><br>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div>
+        <button @click="ShellBeep">shell.beep()</button><br>
+        <button @click="ShellShowItemInFolder">shell.showItemInFolder()</button><br>
+        <button @click="ShellOpenItem">shell.openItem</button><br>
+        <button @click="ShellMoveItemToTrash">shell.moveItemToTrash</button><br>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div>
+        <div>Mouse X: {{ state.mouseX }} Mouse Y: {{ state.mouseY }}<br></div>
+        <button @click="ScreenGetPrimaryDisplay">screen.getPrimaryDisplay()</button><br>
+        <button @click="ScreenGetAllDisplays">screen.getAllDisplays()</button><br>
+        <button @click="ScreenGetDisplayNearestPoint">screen.getDisplayNearestPoint()</button><br>
+        <button @click="ScreenGetDisplayMatching">screen.getDisplayMatching()</button><br>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div>
+        <button @click="Notification1">Notification 1</button><br>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div>
+        <button @click="ShowOpenDialog">Show Open Dialog</button><br>
+        <button @click="ShowSaveDialog">Show Save Dialog</button><br>
+        <button @click="ShowMessageBox">Show Message Box</button><br>
+        <button @click="ShowErrorBox">Show ErrorBox</button>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div>
+        <button @click="WebContentsOpenDevTools">webContents.openDevTools()</button><br>
+        <button @click="WebContentsCloseDevTools">webContents.closeDevTools()</button><br>
+        <button @click="WebContentsToggleDevTools">webContents.toggleDevTools()</button>
+        <div>isDevToolsOpened: {{ state.isDevToolsOpened }}</div>
+        <div>isDevToolsFocused: {{ state.isDevToolsFocused }}</div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div>
+        <button @click="ClipboardReadText">clipboard.readText()</button>
+        <span>{{ state.clipboardReadText }}</span>
+      </div>
+      <div>
+        <button @click="ClipboardWriteText">clipboard.writeText()</button>
+        <input v-model="state.clipboardWriteText" placeholder="Text to copy to the clipboard">
+      </div>
+      <div>
+        <button @click="ClipboardAvailableFormats">clipboard.availableFormats()</button>
+        <span>{{ state.clipboardAvailableFormats }}</span>
+      </div>
+      <div>
+        <button @click="ClipboardReadImage">clipboard.readImage()</button>
+        <input v-model="state.clipboardReadImage">
+        <img :src="state.clipboardReadImage"/>
+      </div>
+      <div>
+        <button @click="ClipboardWriteImage">clipboard.writeImage()</button>
+        <!-- TODO -->
+      </div>
+    </div>
+
+    <hr>
+
     <div>
       singleInstanceLock: {{ state.singleInstanceLock }}
     </div>
@@ -29,25 +119,159 @@
 
     <hr>
 
-    <img alt="Vue logo" src="~@/assets/logo.png">
+    <!-- <img alt="Vue logo" src="~@/assets/logo.png"> -->
   </div>
 </template>
 
 <script lang="ts">
 import {reactive, computed, onMounted, inject, ref} from "@vue/composition-api";
+// import {clipboard, webContents} from "electron";
+// import {clipboard, webContents, dialog, downloadItem, globalShortcut, /* image, */ ipcRenderer, nativeImage, notification, screen, shell} from "electron";
+import {clipboard, webContents, dialog, DownloadItem, globalShortcut, /* image, */ ipcRenderer, nativeImage, Notification, screen, shell} from "electron";
+import {remote} from "electron";
+// Can't use these remotely: webContents
+// import {app, protocol, BrowserWindow, ipcMain} from "electron";
 // import {Something} from "../app.vue";
 // import {ThemeSymbol} from "@/app.vue";
+import * as fs from "fs";
 
 export default {
   setup(props: any, {root}: any) {
-    // const theme = inject("ThemeSymbol");
-    console.log("setup in main.vue has begun");
+    fs.writeFile("/Users/leifcoleman/Desktop/a.txt", "This is from the renderer", (err) => {
+      console.log(err);
+    });
 
+    async function AppQuit() {
+      console.log("Testing");
+    }
+
+    async function ShellBeep() {
+      remote.shell.beep();
+    }
+
+    async function ShellShowItemInFolder() {
+      remote.shell.showItemInFolder("..");
+    }
+
+    async function ShellOpenItem() {
+      const opened = remote.shell.openItem("../package.json");
+      console.log("File was opened:", opened);
+    }
+
+    async function ShellMoveItemToTrash() {
+      remote.shell.moveItemToTrash("");
+    }
+
+    setInterval(() => {
+      const result = remote.screen.getCursorScreenPoint();
+      state.mouseX = result["x"];
+      state.mouseY = result["y"];
+    }, 10);
+
+    async function ScreenGetPrimaryDisplay() {
+      const result = remote.screen.getPrimaryDisplay();
+      console.log(result);
+    }
+
+    async function ScreenGetAllDisplays() {
+      const result = remote.screen.getAllDisplays();
+      console.log(result);
+    }
+
+    async function ScreenGetDisplayNearestPoint() {
+      const result = remote.screen.getDisplayNearestPoint({x: 0, y: 0});
+      console.log(result);
+    }
+
+    async function ScreenGetDisplayMatching() {
+      const result = remote.screen.getDisplayMatching({x: 0, y: 0, width: 100, height: 100});
+      console.log(result);
+    }
+
+    async function Notification1() {
+      const myNotification = new remote.Notification({
+        title: "Title",
+        body: "Lorem Ipsum Dolor Sit Amet",
+        silent: false,
+        // icon: ,
+      });
+
+      console.log(myNotification);
+      myNotification.show();
+      myNotification.on("click", () => {
+        console.log("You clicked on the notification!");
+      });
+      myNotification.on("close", () => {
+        console.log("The notification was closed!");
+      });
+    }
+
+    async function ShowSaveDialog() {
+      const result = await remote.dialog.showSaveDialog({
+        title: "Save a file",
+        // defaultPath: ,
+        // buttonLabel: ,
+        // filters: ,
+      });
+
+      if (result["canceled"]) {
+        console.log("User canceled saving a file");
+      } else {
+        console.log("The path is:", result["filePath"]);
+      }
+    }
+
+    async function ShowOpenDialog() {
+      const result = await remote.dialog.showOpenDialog({
+        title: "Open a file",
+        // defaultPath: ,
+        // buttonLabel: ,
+        // filters: ,
+        properties: ["openFile", "openDirectory", "multiSelections", "showHiddenFiles"]
+      });
+
+      if (result["canceled"]) {
+        console.log("User canceled opening a file");
+      } else {
+        console.log("The paths are:", result["filePaths"]);
+        // console.log();
+      }
+    }
+
+    async function ShowMessageBox() {
+      const result = await remote.dialog.showMessageBox({
+        type: "warning", // "none", "info", "error", "question" or "warning". On Windows, "question" displays the same icon as "info", unless you set an icon using the "icon" option. On macOS, both "warning" and "error" display the same warning icon
+        buttons: ["Left", "Middle", "Right"],
+        title: "Muh Title",
+        message: "Muh message",
+        detail: "This is the detail",
+        checkboxLabel: "checkboxLabel",
+        checkboxChecked: true,
+        // icon: ,
+      });
+
+      console.log(result);
+    }
+
+    async function ShowErrorBox() {
+      remote.dialog.showErrorBox("Title", "This is the content of the error box");
+    }
+
+    // const theme = inject("ThemeSymbol");
     // setInterval(() => {
     //   console.log(theme);
     // }, 500);
 
     const state: any = reactive({
+      mouseX: null,
+      mouseY: null,
+      isDevToolsOpened: null,
+      isDevToolsFocused: null,
+      clipboardReadText: null,
+      clipboardWriteText: "",
+      clipboardReadImage: null,
+      clipboardWriteImage: null,
+      clipboardAvailableFormats: null,
       singleInstanceLock: null,
       sliderValue: 50,
       count: 0,
@@ -73,6 +297,44 @@ export default {
       console.log("============================================================");
     });
 
+    setInterval(() => {
+      state.isDevToolsOpened  = remote.getCurrentWebContents().isDevToolsOpened();
+      state.isDevToolsFocused = remote.getCurrentWebContents().isDevToolsFocused();
+    }, 1000);
+
+    function WebContentsOpenDevTools() {
+      remote.getCurrentWebContents().openDevTools();
+    }
+
+    function WebContentsCloseDevTools() {
+      remote.getCurrentWebContents().closeDevTools();
+    }
+
+    function WebContentsToggleDevTools() {
+      remote.getCurrentWebContents().toggleDevTools();
+    }
+
+    function ClipboardReadText() {
+      state.clipboardReadText = clipboard.readText();
+    }
+
+    function ClipboardWriteText() {
+      clipboard.writeText(state.clipboardWriteText);
+    }
+
+    function ClipboardReadImage() {
+      state.clipboardReadImage = clipboard.readImage().toDataURL();
+      console.log(state.clipboardReadImage);
+    }
+
+    function ClipboardWriteImage() {
+      console.log("Todo");
+    }
+
+    function ClipboardAvailableFormats() {
+      state.clipboardAvailableFormats = clipboard.availableFormats();
+    }
+
     function InputRange(value: number) {
       console.log(value);
     }
@@ -83,18 +345,46 @@ export default {
 
     function YoloSwag() {
       root.Send("YoloSwag");
+      root.Once("YoloSwag", (res: any) => {
+        console.log(res);
+      });
     }
 
     function ElectronTest() {
-      const sendToElecton = "ping";
-      root.Send("TestFunc1", sendToElecton);
+      root.Send("TestFunc1", "ping");
+      root.Once("TestFunc1", (res: any) => {
+        console.log(res);
+      });
     }
 
-    root.On("TestFunc1", (res: any) => {
-      console.log(res);
+    root.On("QueryDevToolStatus", (res: any) => {
+      state.isDevToolsOpened = res["isDevToolsOpened"];
+      state.isDevToolsFocused = res["isDevToolsFocused"];
     });
 
     return {
+      AppQuit,
+      ShellBeep,
+      ShellShowItemInFolder,
+      ShellOpenItem,
+      ShellMoveItemToTrash,
+      ScreenGetPrimaryDisplay,
+      ScreenGetAllDisplays,
+      ScreenGetDisplayNearestPoint,
+      ScreenGetDisplayMatching,
+      Notification1,
+      ShowSaveDialog,
+      ShowOpenDialog,
+      ShowMessageBox,
+      ShowErrorBox,
+      WebContentsOpenDevTools,
+      WebContentsCloseDevTools,
+      WebContentsToggleDevTools,
+      ClipboardReadText,
+      ClipboardWriteText,
+      ClipboardReadImage,
+      ClipboardWriteImage,
+      ClipboardAvailableFormats,
       state,
       InputRange,
       Increment,

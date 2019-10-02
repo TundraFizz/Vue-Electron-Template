@@ -29,36 +29,39 @@ Linter / Formatter: TSLint, Lint on save
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+Done       | Done
+Todo       | Still need to do this
+Maybe      | Might do this, because it's kind of useful
+Not useful | Won't do this because it's not useful
+
 ### TODO
+
 https://electronjs.org/docs/all
+https://electronjs.org/docs/api
 
 app.requestSingleInstanceLock()
 
-clipboard.readText()
-clipboard.writeText()
-clipboard.readImage()
-clipboard.writeImage()
-clipboard.availableFormats()
-clipboard.has()
-clipboard.read()
-clipboard.readBuffer()
-clipboard.writeBuffer()
-clipboard.write()
+globalShortcut.register()
 
-contents.openDevTools()
-contents.closeDevTools()
-contents.isDevToolsOpened()
-contents.isDevToolsFocused()
-contents.toggleDevTools()
+image.toPNG()
+image.toJPEG()
+image.toBitmap()
+image.getNativeHandle()
+image.isEmpty()
+image.getSize()
+image.setTemplateImage()
+image.isTemplateImage()
+image.crop()
+image.resize()
+image.getAspectRatio()
+image.addRepresentation()
 
-dialog.showOpenDialogSync()
-dialog.showOpenDialog()
-dialog.showSaveDialogSync()
-dialog.showSaveDialog()
-dialog.showMessageBoxSync()
-dialog.showMessageBox()
-dialog.showErrorBox()
-dialog.showCertificateTrustDialog()
+nativeImage.createEmpty()
+nativeImage.createFromPath()
+nativeImage.createFromBitmap()
+nativeImage.createFromBuffer()
+nativeImage.createFromDataURL()
+nativeImage.createFromNamedImage()
 
 downloadItem.setSavePath()
 downloadItem.getSavePath()
@@ -82,60 +85,6 @@ downloadItem.getLastModifiedTime()
 downloadItem.getETag()
 downloadItem.getStartTime()
 
-globalShortcut.register()
-
-image.toPNG()
-image.toJPEG()
-image.toBitmap()
-image.getNativeHandle()
-image.isEmpty()
-image.getSize()
-image.setTemplateImage()
-image.isTemplateImage()
-image.crop()
-image.resize()
-image.getAspectRatio()
-image.addRepresentation()
-
-ipcRenderer.on()
-ipcRenderer.once()
-ipcRenderer.removeListener()
-ipcRenderer.removeAllListeners()
-ipcRenderer.send()
-ipcRenderer.sendSync()
-ipcRenderer.sendTo()
-ipcRenderer.sendToHost()
-
-nativeImage.createEmpty()
-nativeImage.createFromPath()
-nativeImage.createFromBitmap()
-nativeImage.createFromBuffer()
-nativeImage.createFromDataURL()
-nativeImage.createFromNamedImage()
-
-notification.isSupported()
-notification.show()
-notification.close()
-
-screen.getCursorScreenPoint()
-screen.getPrimaryDisplay()
-screen.getAllDisplays()
-screen.getDisplayNearestPoint()
-screen.getDisplayMatching()
-screen.screenToDipPoint()
-screen.dipToScreenPoint()
-screen.screenToDipRect()
-screen.dipToScreenRect()
-
-shell.showItemInFolder()
-shell.openItem()
-shell.openExternalSync()
-shell.openExternal()
-shell.moveItemToTrash()
-shell.beep()
-shell.writeShortcutLink()
-shell.readShortcutLink()
-
 win.maximize()
 win.unmaximize()
 win.minimize()
@@ -155,7 +104,6 @@ win.setOpacity()
 win.setThumbarButtons()
 
 Get auto-updates to work.
-Make a button to toggle devtools.
 My app's window/tray disappeared after a few minutes.
 The font looks blurry, what is this and what can I do?
 Native File Drag & Drop
@@ -167,3 +115,109 @@ Class: Tray
 Online/Offline Event Detection
 Checklist: Security Recommendations
 Code signing is a security technology that you use to certify that
+
+### DONE
+clipboard.readText()                | Done
+clipboard.writeText()               | Done
+clipboard.readImage()               | Done
+clipboard.writeImage()              | Todo
+clipboard.availableFormats()        | Done
+clipboard.has()                     | Not useful
+clipboard.read()                    | Not useful
+clipboard.readBuffer()              | Not useful
+clipboard.writeBuffer()             | Not useful
+clipboard.write()                   | Maybe
+webContents.openDevTools()          | Done
+webContents.closeDevTools()         | Done
+webContents.toggleDevTools()        | Done
+webContents.isDevToolsOpened()      | Done
+webContents.isDevToolsFocused()     | Done
+dialog.showOpenDialog()             | Done
+dialog.showSaveDialog()             | Done
+dialog.showMessageBox()             | Done
+dialog.showErrorBox()               | Done
+dialog.showCertificateTrustDialog() | Not useful
+ipcRenderer.on()                    | Done
+ipcRenderer.once()                  | Done
+ipcRenderer.send()                  | Done
+ipcRenderer.sendSync()              | Not useful
+ipcRenderer.removeListener()        | Not useful
+ipcRenderer.removeAllListeners()    | Not useful
+ipcRenderer.sendTo()                | Not useful
+ipcRenderer.sendToHost()            | Not useful
+notification.isSupported()          | Done
+notification.show()                 | Done
+notification.close()                | Done
+screen.getCursorScreenPoint()       | Done
+screen.getPrimaryDisplay()          | Done
+screen.getAllDisplays()             | Done
+screen.getDisplayNearestPoint()     | Done
+screen.getDisplayMatching()         | Done
+screen.screenToDipPoint()           | Not useful
+screen.dipToScreenPoint()           | Not useful
+screen.screenToDipRect()            | Not useful
+screen.dipToScreenRect()            | Not useful
+shell.beep()                        | Done
+shell.showItemInFolder()            | Done
+shell.openItem()                    | Todo
+shell.openExternalSync()            | Not useful
+shell.openExternal()                | Not useful
+shell.moveItemToTrash()             | Todo
+shell.writeShortcutLink()           | Not useful
+shell.readShortcutLink()            | Not useful
+
+===========================================================================================
+app                             | Main |
+autoUpdater                     | Main |
+BrowserWindow                   | Main |
+contentTracing                  | Main |
+dialog                          | Main |
+globalShortcut                  | Main |
+inAppPurchase                   | Main |
+ipcMain                         | Main |
+net                             | Main |
+netLog                          | Main |
+Notification                    | Main |
+powerMonitor                    | Main |
+powerSaveBlocker                | Main |
+protocol                        | Main |
+screen                          | Main |
+session                         | Main |
+systemPreferences               | Main |
+webContents                     | Main |
+clipboard                       | Main | Renderer
+crashReporter                   | Main | Renderer
+nativeImage                     | Main | Renderer
+process                         | Main | Renderer
+shell                           | Main | Renderer
+desktopCapturer                 |      | Renderer
+ipcRenderer                     |      | Renderer
+remote                          |      | Renderer
+webFrame                        |      | Renderer
+Overview                        |      | Renderer
+Class: BrowserView              | Main |
+Class: BrowserWindow            | Main |
+Class: ClientRequest            | Main |
+Class: Cookies                  | Main |
+Class: Debugger                 | Main |
+Class: DownloadItem             | Main |
+Class: IncomingMessage          | Main |
+Class: Menu                     | Main |
+Class: MenuItem                 | Main |
+Class: Notification             | Main |
+Class: Session                  | Main |
+Class: TouchBar                 | Main |
+Class: TouchBarButton           | Main |
+Class: TouchBarColorPicker      | Main |
+Class: TouchBarGroup            | Main |
+Class: TouchBarLabel            | Main |
+Class: TouchBarPopover          | Main |
+Class: TouchBarScrubber         | Main |
+Class: TouchBarSegmentedControl | Main |
+Class: TouchBarSlider           | Main |
+Class: TouchBarSpacer           | Main |
+Class: Tray                     | Main |
+Class: WebContents              | Main |
+Class: WebRequest               | Main |
+Class: NativeImage              | Main | Renderer
+Class: BrowserWindowProxy       |      | Renderer

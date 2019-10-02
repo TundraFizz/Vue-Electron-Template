@@ -12,7 +12,7 @@
 <script lang="ts">
 export default {
   setup(props: any, {root}: any) {
-    function YoloSwag() {
+    function SwagYolo() {
       alert("Yolo swag!");
     }
 
@@ -26,7 +26,7 @@ export default {
     });
 
     return {
-      YoloSwag,
+      SwagYolo,
       ElectronTest
     };
   }

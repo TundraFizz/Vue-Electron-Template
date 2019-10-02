@@ -1,12 +1,9 @@
-"use strict";
-
-import {app, protocol, BrowserWindow, ipcMain, shell, dialog, clipboard} from "electron";
+import {app, protocol, BrowserWindow, ipcMain, ipcRenderer, shell, dialog, clipboard} from "electron";
 import {createProtocol, installVueDevtools} from "vue-cli-plugin-electron-builder/lib";
-const isDevelopment = process.env.NODE_ENV !== "production";
+import IPC from "./ipc";
 
-// Keep a global reference of the window object. If you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let win: BrowserWindow | null;
+const isDevelopment = (process.env.NODE_ENV !== "production");
+let win: any; // Global reference of BrowserWindow to prevent an automatic close when the JS object is garbage collected
 
 const singleInstanceLock = app.requestSingleInstanceLock();
 console.log("===============================================");
@@ -31,13 +28,13 @@ console.log("===============================================");
   }
 */
 
-// event.sender.send("SingleInstanceLock", "singleInstanceLock");
+// win.send("SingleInstanceLock", "singleInstanceLock");
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
 
 function CreateWindow() {
-  const windowConfig = {
+  const windowConfig: Electron.BrowserWindowConstructorOptions = {
     width: 600,
     height: 500,
     frame: false,
@@ -115,49 +112,10 @@ if (isDevelopment) {
   }
 }
 
-const IPC: {[key: string]: any} = {
-  Initialize: (event: any, data: any) => {
-    const initializationData = {
-      singleInstanceLock: singleInstanceLock
-    };
-
-    event.sender.send("Initialize", initializationData);
-  },
-
-  TestFunc1: (event: any, data: any) => {
-    console.log("===========================================");
-    console.log(event);
-    console.log("===========================================");
-    event.sender.send("TestFunc1", "pong");
-  },
-
-  Quit: (event: any, data: any) => {
-    app.quit();
-  },
-
-  OpenProjectInBrowser: (event: any, data: any) => {
-    shell.openExternal("https://github.com/TundraFizz/Vue-Electron-Template");
-  },
-
-  YoloSwag: (event: any, data: any) => {
-    const result = dialog.showMessageBoxSync({
-      type: "warning", // "none", "info", "error", "question" or "warning". On Windows, "question" displays the same icon as "info", unless you set an icon using the "icon" option. On macOS, both "warning" and "error" display the same warning icon
-      buttons: ["Left", "Middle", "Right"],
-      title: "Muh Title",
-      message: "Muh message",
-      detail: "This is the detail",
-      checkboxLabel: "checkboxLabel",
-      checkboxChecked: true,
-      // icon: ,
-    });
-
-    console.log(result);
-  }
-};
-
-ipcMain.on("ipc", (event, args) => {
+ipcMain.on("ipc", (event, args: any) => {
   try {
-    IPC[args.method](event, args.data);
+    const result = IPC[args.method](args.data) || 0;
+    win.send(args.method, result);
   } catch (error) {
     console.log(error);
     console.log(`${args.method}() is not a function`);

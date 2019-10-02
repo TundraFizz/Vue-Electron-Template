@@ -46,8 +46,8 @@ const store = new Vuex.Store({
   }
 });
 
-// Define basic functions that allow easy usage of reading and writing from the data store
 Vue.mixin({
+  // Define global functions
   methods: {
     Send: (value: any, args: any = null) => {
       ipcRenderer.send("ipc", {
@@ -56,18 +56,24 @@ Vue.mixin({
       });
     },
 
-    On: (ipcName: string, Callback: (res: any) => void) => {
-      ipcRenderer.on(ipcName, (event: object, res: any) => {
-        Callback(res);
+    Once: (ipcName: string, Callback: (response: any) => void) => {
+      ipcRenderer.once(ipcName, (event: object, response: any) => {
+        Callback(response);
+      });
+    },
+
+    On: (ipcName: string, Callback: (response: any) => void) => {
+      ipcRenderer.on(ipcName, (event: object, response: any) => {
+        Callback(response);
       });
     },
 
     Read: function(key) {
-      return this.$store.state[key];
+      return this.$store.state[key]; // Retrieve data from the global data store
     },
 
     Write: function(key, val) {
-      this.$store.commit(key, val);
+      this.$store.commit(key, val); // Write data to the global data store
     }
   }
 });

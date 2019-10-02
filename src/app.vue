@@ -92,11 +92,11 @@ export default {
 body {
   // Prevent dragging of images, links, and text selection
   margin: 0;
-	cursor: default;
+  cursor: default;
   font-family: sans-serif;
   -webkit-user-select: none;
-	-webkit-user-drag: none;
-	-webkit-app-region: no-drag;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
 }
 
 #app {
