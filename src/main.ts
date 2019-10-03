@@ -1,85 +1,101 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Vuex from "vuex";
-import VueCompositionApi from "@vue/composition-api";
-import App from "./app.vue";
-import Main from "./views/main.vue";
-import Settings from "./views/settings.vue";
-import About from "./views/about.vue";
-import {ipcRenderer} from "electron";
+import {app, protocol, BrowserWindow, ipcMain, ipcRenderer, shell, dialog, clipboard} from "electron";
+import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
+import IPC from "./ipc";
 
-Vue.use(Router);
-Vue.use(Vuex);
-Vue.use(VueCompositionApi);
-Vue.config.productionTip = false;
+const isDevelopment = (process.env.NODE_ENV !== "production");
+export let firstInstance; // = app.requestSingleInstanceLock();
+let win: any; // Global reference of BrowserWindow to prevent an automatic close when the JS object is garbage collected
 
-const router = new Router({
-  mode: "history", // There's also "abstract", but that mode sucks
-  base: process.env.BASE_URL,
-  routes: [{
-    path: "/",
-    name: "main",
-    component: Main,
-  },
-  {
-    path: "/settings",
-    name: "settings",
-    component: Settings
-  },
-  {
-    path: "/about",
-    name: "about",
-    component: About
-  }]
-});
+// Scheme must be registered before the app is ready
+// protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
 
-const store = new Vuex.Store({
-  state: {
-    a: 123,
-    b: 456,
-    singleInstanceLock: null
-  },
-  mutations: {
-    data(state, a) {
-      state.singleInstanceLock = a;
+function CreateWindow() {
+  const windowConfig: Electron.BrowserWindowConstructorOptions = {
+    width: 600,
+    height: 500,
+    frame: false,
+    resizable: true,
+    webPreferences: {nodeIntegration: true}
+  };
+
+  win = new BrowserWindow(windowConfig);
+
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string); // Load the url of the dev server if in development mode
+
+    if (!process.env.IS_TEST) {
+      win.webContents.openDevTools();
     }
+  } else {
+    createProtocol("app");
+    win.loadURL("app://./index.html"); // Load the index.html when not in development
+  }
+
+  win.on("closed", () => {
+    win = null;
+  });
+}
+
+app.on("window-all-closed", () => {
+  // Quit when all windows are closed. On macOS it is common for applications and
+  // their menu bar to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== "darwin") {
+    app.quit();
   }
 });
 
-Vue.mixin({
-  // Define global functions
-  methods: {
-    Send: (value: any, args: any = null) => {
-      ipcRenderer.send("ipc", {
-        method: value,
-        data: args
-      });
-    },
-
-    Once: (ipcName: string, Callback: (response: any) => void) => {
-      ipcRenderer.once(ipcName, (event: object, response: any) => {
-        Callback(response);
-      });
-    },
-
-    On: (ipcName: string, Callback: (response: any) => void) => {
-      ipcRenderer.on(ipcName, (event: object, response: any) => {
-        Callback(response);
-      });
-    },
-
-    Read: function(key) {
-      return this.$store.state[key]; // Retrieve data from the global data store
-    },
-
-    Write: function(key, val) {
-      this.$store.commit(key, val); // Write data to the global data store
-    }
+app.on("activate", () => {
+  // On macOS it's common to re-create a window in the app when
+  // the dock icon is clicked and there are no other windows open
+  if (win === null) {
+    CreateWindow();
   }
 });
 
-new Vue({
-  router,
-  store,
-  render: (a) => a(App),
-}).$mount("#app");
+app.on("second-instance", (event, commandLine, workingDirectory) => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (win) {
+    if (win.isMinimized()) {
+      win.restore();
+    }
+
+    win.focus();
+  }
+});
+
+app.on("ready", async () => {
+  // This method will be called when Electron has finished initialization and is ready
+  // to create browser windows. Some APIs can only be used after this event occurs
+  firstInstance = app.requestSingleInstanceLock();
+
+  if (!firstInstance) {
+    app.quit();
+  } else {
+    CreateWindow();
+  }
+});
+
+if (isDevelopment) {
+  // Exit cleanly on request from parent process in development mode
+  if (process.platform === "win32") {
+    process.on("message", (data) => {
+      if (data === "graceful-exit") {
+        app.quit();
+      }
+    });
+  } else {
+    process.on("SIGTERM", () => {
+      app.quit();
+    });
+  }
+}
+
+ipcMain.on("ipc", (event, args: any) => {
+  try {
+    const result = IPC[args.method](args.data) || 0;
+    win.send(args.method, result);
+  } catch (error) {
+    console.log(`Error in function: ${args.method}`);
+    console.log(error);
+  }
+});

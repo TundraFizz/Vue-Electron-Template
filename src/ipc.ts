@@ -1,13 +1,10 @@
 // import {app, protocol, BrowserWindow, ipcMain, ipcRenderer, shell, dialog, clipboard} from "electron";
 import {app, dialog, shell} from "electron";
+import {firstInstance} from "./main";
 
 export default {
-  Initialize: (data: any) => {
-    const initializationData = {
-      // singleInstanceLock: singleInstanceLock
-    };
-
-    return initializationData;
+  GetFirstInstance: (data: any) => {
+    return firstInstance;
   },
 
   TestFunc1: (data: any) => {

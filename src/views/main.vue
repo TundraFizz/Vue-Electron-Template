@@ -5,6 +5,14 @@
 
     <div>
       <div>
+        <button @click="GetFirstInstance">GetFirstInstance</button><br>
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div>
         <button @click="AppQuit">app.quit()</button><br>
       </div>
     </div>
@@ -137,9 +145,18 @@ import * as fs from "fs";
 
 export default {
   setup(props: any, {root}: any) {
-    fs.writeFile("/Users/leifcoleman/Desktop/a.txt", "This is from the renderer", (err) => {
-      console.log(err);
-    });
+
+    async function GetFirstInstance() {
+      root.Send("GetFirstInstance");
+      root.Once("GetFirstInstance", (res: any) => {
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        console.log(res);
+      });
+    }
+
+    // fs.writeFile("/Users/leifcoleman/Desktop/a.txt", "This is from the renderer", (err) => {
+    //   console.log(err);
+    // });
 
     async function AppQuit() {
       console.log("Testing");
@@ -280,6 +297,7 @@ export default {
 
     onMounted(() => {
       console.log("onMounted");
+
       // console.log(asd);
       // console.log(Something());
       // console.log(A.setup.Okay();
@@ -363,6 +381,7 @@ export default {
     });
 
     return {
+      GetFirstInstance,
       AppQuit,
       ShellBeep,
       ShellShowItemInFolder,

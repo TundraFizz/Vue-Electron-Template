@@ -40,7 +40,7 @@ export default {
     const stateAsRefs = toRefs(state);
 
     onMounted(() => {
-      root.Send("Initialize");
+      // root.Send("Initialize");
     });
 
     function DoSomething() {
@@ -56,17 +56,17 @@ export default {
       root.Send("Quit");
     }
 
-    root.On("Initialize", (res: any) => {
-      console.log("app.vue has been initialized");
-      console.log(res);
-      state.singleInstanceLock = res.singleInstanceLock;
+    // root.On("Initialize", (res: any) => {
+    //   console.log("app.vue has been initialized");
+    //   console.log(res);
+    //   state.singleInstanceLock = res.singleInstanceLock;
 
-      console.log(root.Read("a"));
-      console.log(root.Read("b"));
-      console.log(root.Read("singleInstanceLock"));
-      root.Write("data", state.singleInstanceLock);
-      console.log(root.Read("singleInstanceLock"));
-    });
+    //   console.log(root.Read("a"));
+    //   console.log(root.Read("b"));
+    //   console.log(root.Read("singleInstanceLock"));
+    //   root.Write("data", state.singleInstanceLock);
+    //   console.log(root.Read("singleInstanceLock"));
+    // });
 
     return {
       state,
