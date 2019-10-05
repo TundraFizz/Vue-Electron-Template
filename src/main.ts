@@ -3,7 +3,7 @@ import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
 import IPC from "./ipc";
 
 const isDevelopment = (process.env.NODE_ENV !== "production");
-export let firstInstance; // = app.requestSingleInstanceLock();
+export let obj = {}; // A data object to share variables with custom imported files
 let win: any; // Global reference of BrowserWindow to prevent an automatic close when the JS object is garbage collected
 
 // Scheme must be registered before the app is ready
@@ -74,20 +74,20 @@ app.on("second-instance", (event, commandLine, workingDirectory) => {
 app.on("ready", async () => {
   // This method will be called when Electron has finished initialization and is ready
   // to create browser windows. Some APIs can only be used after this event occurs
-  firstInstance = app.requestSingleInstanceLock();
+  obj["firstInstance"] = app.requestSingleInstanceLock();
 
-  if (!firstInstance) {
-    app.quit();
-  } else {
+  if (obj["firstInstance"]) {
     CreateWindow();
+  } else {
+    app.quit();
   }
 });
 
 if (isDevelopment) {
   // Exit cleanly on request from parent process in development mode
   if (process.platform === "win32") {
-    process.on("message", (data) => {
-      if (data === "graceful-exit") {
+    process.on("message", (status) => {
+      if (status === "graceful-exit") {
         app.quit();
       }
     });

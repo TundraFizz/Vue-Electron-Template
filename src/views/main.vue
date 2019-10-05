@@ -4,6 +4,13 @@
     <!-- <hr> -->
 
     <div>
+      <button @click="IncreaseA">Main: Increase A</button> {{ state.a }}<br>
+      <button @click="IncreaseB">Main: Increase B</button> {{ state.b }}
+    </div>
+
+    <hr>
+
+    <div>
       <div>
         <button @click="GetFirstInstance">GetFirstInstance</button><br>
       </div>
@@ -137,14 +144,36 @@ import {reactive, computed, onMounted, inject, ref} from "@vue/composition-api";
 // import {clipboard, webContents, dialog, downloadItem, globalShortcut, /* image, */ ipcRenderer, nativeImage, notification, screen, shell} from "electron";
 import {clipboard, webContents, dialog, DownloadItem, globalShortcut, /* image, */ ipcRenderer, nativeImage, Notification, screen, shell} from "electron";
 import {remote} from "electron";
-// Can't use these remotely: webContents
 // import {app, protocol, BrowserWindow, ipcMain} from "electron";
-// import {Something} from "../app.vue";
-// import {ThemeSymbol} from "@/app.vue";
 import * as fs from "fs";
 
 export default {
   setup(props: any, {root}: any) {
+    const state: any = reactive({
+      a: root.Read("a"),
+      b: root.Read("b"),
+      mouseX: null,
+      mouseY: null,
+      isDevToolsOpened: null,
+      isDevToolsFocused: null,
+      clipboardReadText: null,
+      clipboardWriteText: "",
+      clipboardReadImage: null,
+      clipboardWriteImage: null,
+      clipboardAvailableFormats: null,
+      singleInstanceLock: null,
+      sliderValue: 50,
+      count: 0,
+      double: computed(() => state.count * 2)
+    });
+
+    async function IncreaseA() {
+      root.Write("a", ++state.a);
+    }
+
+    async function IncreaseB() {
+      root.Write("b", ++state.b);
+    }
 
     async function GetFirstInstance() {
       root.Send("GetFirstInstance");
@@ -179,12 +208,6 @@ export default {
     async function ShellMoveItemToTrash() {
       remote.shell.moveItemToTrash("");
     }
-
-    setInterval(() => {
-      const result = remote.screen.getCursorScreenPoint();
-      state.mouseX = result["x"];
-      state.mouseY = result["y"];
-    }, 10);
 
     async function ScreenGetPrimaryDisplay() {
       const result = remote.screen.getPrimaryDisplay();
@@ -275,45 +298,18 @@ export default {
       remote.dialog.showErrorBox("Title", "This is the content of the error box");
     }
 
-    // const theme = inject("ThemeSymbol");
-    // setInterval(() => {
-    //   console.log(theme);
-    // }, 500);
-
-    const state: any = reactive({
-      mouseX: null,
-      mouseY: null,
-      isDevToolsOpened: null,
-      isDevToolsFocused: null,
-      clipboardReadText: null,
-      clipboardWriteText: "",
-      clipboardReadImage: null,
-      clipboardWriteImage: null,
-      clipboardAvailableFormats: null,
-      singleInstanceLock: null,
-      sliderValue: 50,
-      count: 0,
-      double: computed(() => state.count * 2)
-    });
+    setInterval(() => {
+      const result = remote.screen.getCursorScreenPoint();
+      state.mouseX = result["x"];
+      state.mouseY = result["y"];
+    }, 10);
 
     onMounted(() => {
       console.log("onMounted");
-
-      // console.log(asd);
-      // console.log(Something());
-      // console.log(A.setup.Okay();
-
-      // console.log(root.Read("a"));
-      // console.log(root.Read("b"));
-      // console.log(root.Read("singleInstanceLock"));
     });
 
     root.$store.subscribe((mutation: any) => {
-      console.log("========================= mutation =========================");
-      console.log(mutation);
-      state.singleInstanceLock = mutation.payload;
-      console.log(state.singleInstanceLock);
-      console.log("============================================================");
+      state[mutation.type] = mutation.payload;
     });
 
     setInterval(() => {
@@ -382,6 +378,8 @@ export default {
     });
 
     return {
+      IncreaseA,
+      IncreaseB,
       GetFirstInstance,
       AppQuit,
       ShellBeep,

@@ -1,11 +1,10 @@
 // import {app, protocol, BrowserWindow, ipcMain, ipcRenderer, shell, dialog, clipboard} from "electron";
 import {app, dialog, shell} from "electron";
-import {firstInstance} from "./main";
+import {obj} from "./main";
 
 export default {
   GetFirstInstance: (data: any) => {
-    // firstInstance += 1;
-    return firstInstance;
+    return obj["firstInstance"];
   },
 
   TestFunc1: (data: any) => {

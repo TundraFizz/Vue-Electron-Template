@@ -7,10 +7,6 @@
       <router-link tag="div" class="button" draggable="false" to="/about">About</router-link>
       <div class="quit" @click="Quit"><div class="x">X</div></div>
     </div>
-
-    <div>??? {{ state.singleInstanceLock }}</div>
-    <div @click="DoSomething">CLICK ME!</div>
-
     <router-view/>
   </div>
 </template>
@@ -20,37 +16,9 @@ import {ref, reactive, onMounted, toRefs, provide, inject} from "@vue/compositio
 
 export default {
   setup(props: any, {root}: any) {
-    const that = this;
-
-    // root.$store.subscribe((mutation: any) => {
-    //   console.log("========================= mutation =========================");
-    //   console.log(mutation);
-    // });
-
-    provide("ThemeSymbol", "dark");
-
-    // setTimeout(ghsdjfdf, 2000);
-    // setTimeout(ghsdjfdf(that), 2000);
-
-    const state: any = reactive({
-      singleInstanceLock: null,
-    });
-
-    const asd: any = ref("Hello world!");
-    const stateAsRefs = toRefs(state);
-
     onMounted(() => {
       // root.Send("Initialize");
     });
-
-    function DoSomething() {
-      // provide["ThemeSymbol"] = "zzzzzzzzzzzz";
-      // alert("sdfjksdk");
-    }
-
-    // function Okay() {
-    //   return "Okay";
-    // }
 
     function Quit() {
       root.Send("Quit");
@@ -69,23 +37,10 @@ export default {
     // });
 
     return {
-      state,
-      DoSomething,
-      stateAsRefs,
-      asd,
-      // qwe: Okay(),
-      // Something,
       Quit
     };
-  },
-  provide: {
-    ThemeSymbol: "fjkksddff"
   }
 };
-
-// export function Something() {
-//   return "hi";
-// }
 </script>
 
 <style lang="scss">

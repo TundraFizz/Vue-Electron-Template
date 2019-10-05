@@ -40,8 +40,8 @@ const store = new Vuex.Store({
     singleInstanceLock: null
   },
   mutations: {
-    data(state, a) {
-      state.singleInstanceLock = a;
+    Store(state, data) {
+      state[data.key] = data.val;
     }
   }
 });
@@ -73,7 +73,7 @@ Vue.mixin({
     },
 
     Write: function(key, val) {
-      this.$store.commit(key, val); // Write data to the global data store
+      this.$store.commit("Store", {key: key, val: val});
     }
   }
 });
