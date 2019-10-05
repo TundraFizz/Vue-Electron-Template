@@ -4,6 +4,7 @@ import {firstInstance} from "./main";
 
 export default {
   GetFirstInstance: (data: any) => {
+    // firstInstance += 1;
     return firstInstance;
   },
 

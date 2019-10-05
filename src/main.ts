@@ -13,6 +13,7 @@ function CreateWindow() {
   const windowConfig: Electron.BrowserWindowConstructorOptions = {
     width: 600,
     height: 500,
+    show: false,
     frame: false,
     resizable: true,
     webPreferences: {nodeIntegration: true}
@@ -22,14 +23,21 @@ function CreateWindow() {
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string); // Load the url of the dev server if in development mode
-
-    if (!process.env.IS_TEST) {
-      win.webContents.openDevTools();
-    }
+    win.webContents.openDevTools();
+    // process.env.IS_TEST
   } else {
     createProtocol("app");
     win.loadURL("app://./index.html"); // Load the index.html when not in development
   }
+
+  win.once("ready-to-show", () => {
+    win.show();
+    win.focus();
+    win.focusOnWebView();
+    win.setAlwaysOnTop(true);
+    win.setAlwaysOnTop(false);
+    win.webContents.openDevTools();
+  });
 
   win.on("closed", () => {
     win = null;

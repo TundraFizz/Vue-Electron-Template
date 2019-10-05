@@ -154,9 +154,10 @@ export default {
       });
     }
 
-    // fs.writeFile("/Users/leifcoleman/Desktop/a.txt", "This is from the renderer", (err) => {
-    //   console.log(err);
-    // });
+    /*
+      fs.writeFile("/Users/leifcoleman/Desktop/a.txt", "This is from the renderer", (err) => {
+        console.log(err);
+      }); */
 
     async function AppQuit() {
       console.log("Testing");
