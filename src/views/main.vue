@@ -167,145 +167,8 @@ export default {
       double: computed(() => state.count * 2)
     });
 
-    async function IncreaseA() {
-      root.Write("a", ++state.a);
-    }
-
-    async function IncreaseB() {
-      root.Write("b", ++state.b);
-    }
-
-    async function GetFirstInstance() {
-      root.Send("GetFirstInstance");
-      root.Once("GetFirstInstance", (res: any) => {
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        console.log(res);
-      });
-    }
-
-    /*
-      fs.writeFile("/Users/leifcoleman/Desktop/a.txt", "This is from the renderer", (err) => {
-        console.log(err);
-      }); */
-
-    async function AppQuit() {
-      console.log("Testing");
-    }
-
-    async function ShellBeep() {
-      remote.shell.beep();
-    }
-
-    async function ShellShowItemInFolder() {
-      remote.shell.showItemInFolder("..");
-    }
-
-    async function ShellOpenItem() {
-      const opened = remote.shell.openItem("../package.json");
-      console.log("File was opened:", opened);
-    }
-
-    async function ShellMoveItemToTrash() {
-      remote.shell.moveItemToTrash("");
-    }
-
-    async function ScreenGetPrimaryDisplay() {
-      const result = remote.screen.getPrimaryDisplay();
-      console.log(result);
-    }
-
-    async function ScreenGetAllDisplays() {
-      const result = remote.screen.getAllDisplays();
-      console.log(result);
-    }
-
-    async function ScreenGetDisplayNearestPoint() {
-      const result = remote.screen.getDisplayNearestPoint({x: 0, y: 0});
-      console.log(result);
-    }
-
-    async function ScreenGetDisplayMatching() {
-      const result = remote.screen.getDisplayMatching({x: 0, y: 0, width: 100, height: 100});
-      console.log(result);
-    }
-
-    async function Notification1() {
-      const myNotification = new remote.Notification({
-        title: "Title",
-        body: "Lorem Ipsum Dolor Sit Amet",
-        silent: false,
-        // icon: ,
-      });
-
-      console.log(myNotification);
-      myNotification.show();
-      myNotification.on("click", () => {
-        console.log("You clicked on the notification!");
-      });
-      myNotification.on("close", () => {
-        console.log("The notification was closed!");
-      });
-    }
-
-    async function ShowSaveDialog() {
-      const result = await remote.dialog.showSaveDialog({
-        title: "Save a file",
-        // defaultPath: ,
-        // buttonLabel: ,
-        // filters: ,
-      });
-
-      if (result["canceled"]) {
-        console.log("User canceled saving a file");
-      } else {
-        console.log("The path is:", result["filePath"]);
-      }
-    }
-
-    async function ShowOpenDialog() {
-      const result = await remote.dialog.showOpenDialog({
-        title: "Open a file",
-        // defaultPath: ,
-        // buttonLabel: ,
-        // filters: ,
-        properties: ["openFile", "openDirectory", "multiSelections", "showHiddenFiles"]
-      });
-
-      if (result["canceled"]) {
-        console.log("User canceled opening a file");
-      } else {
-        console.log("The paths are:", result["filePaths"]);
-        // console.log();
-      }
-    }
-
-    async function ShowMessageBox() {
-      const result = await remote.dialog.showMessageBox({
-        type: "warning", // "none", "info", "error", "question" or "warning". On Windows, "question" displays the same icon as "info", unless you set an icon using the "icon" option. On macOS, both "warning" and "error" display the same warning icon
-        buttons: ["Left", "Middle", "Right"],
-        title: "Muh Title",
-        message: "Muh message",
-        detail: "This is the detail",
-        checkboxLabel: "checkboxLabel",
-        checkboxChecked: true,
-        // icon: ,
-      });
-
-      console.log(result);
-    }
-
-    async function ShowErrorBox() {
-      remote.dialog.showErrorBox("Title", "This is the content of the error box");
-    }
-
-    setInterval(() => {
-      const result = remote.screen.getCursorScreenPoint();
-      state.mouseX = result["x"];
-      state.mouseY = result["y"];
-    }, 10);
-
     onMounted(() => {
-      console.log("onMounted");
+      console.log("onMounted: main.vue");
     });
 
     root.$store.subscribe((mutation: any) => {
@@ -313,64 +176,15 @@ export default {
     });
 
     setInterval(() => {
+      const result = remote.screen.getCursorScreenPoint();
+      state.mouseX = result["x"];
+      state.mouseY = result["y"];
+    }, 10);
+
+    setInterval(() => {
       state.isDevToolsOpened  = remote.getCurrentWebContents().isDevToolsOpened();
       state.isDevToolsFocused = remote.getCurrentWebContents().isDevToolsFocused();
     }, 1000);
-
-    function WebContentsOpenDevTools() {
-      remote.getCurrentWebContents().openDevTools();
-    }
-
-    function WebContentsCloseDevTools() {
-      remote.getCurrentWebContents().closeDevTools();
-    }
-
-    function WebContentsToggleDevTools() {
-      remote.getCurrentWebContents().toggleDevTools();
-    }
-
-    function ClipboardReadText() {
-      state.clipboardReadText = clipboard.readText();
-    }
-
-    function ClipboardWriteText() {
-      clipboard.writeText(state.clipboardWriteText);
-    }
-
-    function ClipboardReadImage() {
-      state.clipboardReadImage = clipboard.readImage().toDataURL();
-      console.log(state.clipboardReadImage);
-    }
-
-    function ClipboardWriteImage() {
-      console.log("Todo");
-    }
-
-    function ClipboardAvailableFormats() {
-      state.clipboardAvailableFormats = clipboard.availableFormats();
-    }
-
-    function InputRange(value: number) {
-      console.log(value);
-    }
-
-    function Increment() {
-      state.count++;
-    }
-
-    function YoloSwag() {
-      root.Send("YoloSwag");
-      root.Once("YoloSwag", (res: any) => {
-        console.log(res);
-      });
-    }
-
-    function ElectronTest() {
-      root.Send("TestFunc1", "ping");
-      root.Once("TestFunc1", (res: any) => {
-        console.log(res);
-      });
-    }
 
     root.On("QueryDevToolStatus", (res: any) => {
       state.isDevToolsOpened = res["isDevToolsOpened"];
@@ -378,36 +192,159 @@ export default {
     });
 
     return {
-      IncreaseA,
-      IncreaseB,
-      GetFirstInstance,
-      AppQuit,
-      ShellBeep,
-      ShellShowItemInFolder,
-      ShellOpenItem,
-      ShellMoveItemToTrash,
-      ScreenGetPrimaryDisplay,
-      ScreenGetAllDisplays,
-      ScreenGetDisplayNearestPoint,
-      ScreenGetDisplayMatching,
-      Notification1,
-      ShowSaveDialog,
-      ShowOpenDialog,
-      ShowMessageBox,
-      ShowErrorBox,
-      WebContentsOpenDevTools,
-      WebContentsCloseDevTools,
-      WebContentsToggleDevTools,
-      ClipboardReadText,
-      ClipboardWriteText,
-      ClipboardReadImage,
-      ClipboardWriteImage,
-      ClipboardAvailableFormats,
       state,
-      InputRange,
-      Increment,
-      YoloSwag,
-      ElectronTest
+      IncreaseA: () => {
+        root.Write("a", ++state.a);
+      },
+      IncreaseB: () => {
+        root.Write("b", ++state.b);
+      },
+      GetFirstInstance: () => {
+        root.Send("GetFirstInstance");
+        root.Once("GetFirstInstance", (res: any) => {
+          console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+          console.log(res);
+        });
+      },
+      AppQuit: () => {
+        console.log("Testing");
+      },
+      ShellBeep: () => {
+        remote.shell.beep();
+      },
+      ShellShowItemInFolder: () => {
+        remote.shell.showItemInFolder("..");
+      },
+      ShellOpenItem: () => {
+        const opened = remote.shell.openItem("../package.json");
+        console.log("File was opened:", opened);
+      },
+      ShellMoveItemToTrash: () => {
+        remote.shell.moveItemToTrash("");
+      },
+      ScreenGetPrimaryDisplay: () => {
+        const result = remote.screen.getPrimaryDisplay();
+        console.log(result);
+      },
+      ScreenGetAllDisplays: () => {
+        const result = remote.screen.getAllDisplays();
+        console.log(result);
+      },
+      ScreenGetDisplayNearestPoint: () => {
+        const result = remote.screen.getDisplayNearestPoint({x: 0, y: 0});
+        console.log(result);
+      },
+      ScreenGetDisplayMatching: () => {
+        const result = remote.screen.getDisplayMatching({x: 0, y: 0, width: 100, height: 100});
+        console.log(result);
+      },
+      Notification1: () => {
+        const myNotification = new remote.Notification({
+          title: "Title",
+          body: "Lorem Ipsum Dolor Sit Amet",
+          silent: false,
+          // icon: ,
+        });
+
+        console.log(myNotification);
+        myNotification.show();
+        myNotification.on("click", () => {
+          console.log("You clicked on the notification!");
+        });
+        myNotification.on("close", () => {
+          console.log("The notification was closed!");
+        });
+      },
+      ShowSaveDialog: async () => {
+        const result = await remote.dialog.showSaveDialog({
+          title: "Save a file",
+          // defaultPath: ,
+          // buttonLabel: ,
+          // filters: ,
+        });
+
+        if (result["canceled"]) {
+          console.log("User canceled saving a file");
+        } else {
+          console.log("The path is:", result["filePath"]);
+        }
+      },
+      ShowOpenDialog: async () => {
+        const result = await remote.dialog.showOpenDialog({
+          title: "Open a file",
+          // defaultPath: ,
+          // buttonLabel: ,
+          // filters: ,
+          properties: ["openFile", "openDirectory", "multiSelections", "showHiddenFiles"]
+        });
+
+        if (result["canceled"]) {
+          console.log("User canceled opening a file");
+        } else {
+          console.log("The paths are:", result["filePaths"]);
+          // console.log();
+        }
+      },
+      ShowMessageBox: async () => {
+        const result = await remote.dialog.showMessageBox({
+          type: "warning", // "none", "info", "error", "question" or "warning". On Windows, "question" displays the same icon as "info", unless you set an icon using the "icon" option. On macOS, both "warning" and "error" display the same warning icon
+          buttons: ["Left", "Middle", "Right"],
+          title: "Muh Title",
+          message: "Muh message",
+          detail: "This is the detail",
+          checkboxLabel: "checkboxLabel",
+          checkboxChecked: true,
+          // icon: ,
+        });
+
+        console.log(result);
+      },
+      ShowErrorBox: () => {
+        remote.dialog.showErrorBox("Title", "This is the content of the error box");
+      },
+      WebContentsOpenDevTools: () => {
+        remote.getCurrentWebContents().openDevTools();
+      },
+      WebContentsCloseDevTools: () => {
+        remote.getCurrentWebContents().closeDevTools();
+      },
+      WebContentsToggleDevTools: () => {
+        remote.getCurrentWebContents().toggleDevTools();
+      },
+      ClipboardReadText: () => {
+        state.clipboardReadText = clipboard.readText();
+      },
+      ClipboardWriteText: () => {
+        clipboard.writeText(state.clipboardWriteText);
+      },
+      ClipboardReadImage: () => {
+        state.clipboardReadImage = clipboard.readImage().toDataURL();
+        console.log(state.clipboardReadImage);
+      },
+      ClipboardWriteImage: () => {
+        console.log("Todo");
+      },
+      ClipboardAvailableFormats: () => {
+        state.clipboardAvailableFormats = clipboard.availableFormats();
+      },
+      InputRange: (value) => {
+        console.log(value);
+      },
+      Increment: () => {
+        state.count++;
+      },
+      YoloSwag: () => {
+        root.Send("YoloSwag");
+        root.Once("YoloSwag", (res: any) => {
+          console.log(res);
+        });
+      },
+      ElectronTest: () => {
+        root.Send("TestFunc1", "ping");
+        root.Once("TestFunc1", (res: any) => {
+          console.log(res);
+        });
+      }
     };
   }
 };
@@ -468,6 +405,5 @@ export default {
       }
     }
   }
-
 }
 </style>

@@ -1,6 +1,6 @@
 // import {app, protocol, BrowserWindow, ipcMain, ipcRenderer, shell, dialog, clipboard} from "electron";
 import {app, dialog, shell} from "electron";
-import {obj} from "./main";
+import {win, obj} from "./main";
 
 export default {
   GetFirstInstance: (data: any) => {
@@ -10,6 +10,21 @@ export default {
   TestFunc1: (data: any) => {
     console.log(data);
     return "pong";
+  },
+
+  Minimize: (data: any) => {
+    win.minimize();
+    console.log("Minimize");
+  },
+
+  Restore: (data: any) => {
+    win.unmaximize();
+    console.log("Restore");
+  },
+
+  Maximize: (data: any) => {
+    win.maximize();
+    console.log("Maximize");
   },
 
   Quit: (data: any) => {

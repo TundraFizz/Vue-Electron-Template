@@ -1,52 +1,63 @@
 <template>
-  <!-- <div id="app" onload="Initialize()"> -->
-  <div id="app" onload="console.log('sdfhsdjkfhs')">
+  <div id="app">
     <div id="titlebar">
       <router-link tag="div" class="button" draggable="false" to="/">Main</router-link>
       <router-link tag="div" class="button" draggable="false" to="/settings">Settings</router-link>
       <router-link tag="div" class="button" draggable="false" to="/about">About</router-link>
-      <div class="quit" @click="Quit"><div class="x">X</div></div>
+      <div class="right-container">
+        <div class="minimize" @click="Minimize"></div>
+        <div v-if="state.isMaximized" class="restore" @click="Restore"></div>
+        <div v-else class="maximize" @click="Maximize"></div>
+        <div class="quit" @click="Quit"></div>
+      </div>
     </div>
-    <router-view/>
+
+    <div id="router-view">
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import {ref, reactive, onMounted, toRefs, provide, inject} from "@vue/composition-api";
+import {reactive} from "@vue/composition-api";
 
 export default {
   setup(props: any, {root}: any) {
-    onMounted(() => {
-      // root.Send("Initialize");
+    const state: any = reactive({
+      isMaximized: false
     });
 
-    function Quit() {
-      root.Send("Quit");
-    }
-
-    // root.On("Initialize", (res: any) => {
-    //   console.log("app.vue has been initialized");
-    //   console.log(res);
-    //   state.singleInstanceLock = res.singleInstanceLock;
-
-    //   console.log(root.Read("a"));
-    //   console.log(root.Read("b"));
-    //   console.log(root.Read("singleInstanceLock"));
-    //   root.Write("data", state.singleInstanceLock);
-    //   console.log(root.Read("singleInstanceLock"));
-    // });
+    root.On("IsMaximized", (res: any) => {
+      state.isMaximized = res;
+    });
 
     return {
-      Quit
+      Minimize: () => {
+        root.Send("Minimize");
+      },
+      Restore: () => {
+        root.Send("Restore");
+      },
+      Maximize: () => {
+        root.Send("Maximize");
+      },
+      Quit: () => {
+        root.Send("Quit");
+      }
     };
   }
 };
 </script>
 
 <style lang="scss">
+html {
+  height: 100%;
+}
+
 body {
   // Prevent dragging of images, links, and text selection
   margin: 0;
+  height: 100%;
   cursor: default;
   font-family: sans-serif;
   -webkit-user-select: none;
@@ -55,12 +66,16 @@ body {
 }
 
 #app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   #titlebar {
     display: flex;
     justify-content: flex-start;
     background-color: rgb(215, 250, 255);
     border-bottom: solid black 1px;
-    height: 20px;
+    min-height: 20px;
     font-weight: bold;
     -webkit-user-select: none;
     -webkit-app-region: drag;
@@ -78,26 +93,65 @@ body {
       }
     }
 
-    .quit {
-      -webkit-app-region: no-drag;
-      border-left: solid black 1px;
-      background-color: rgb(255, 91, 91);
-      width: 20px;
-      height: 20px;
+    .right-container {
+      display: flex;
       margin-left: auto;
-      cursor: pointer;
 
-      &:hover {background-color: rgb(255, 121, 121);}
-      &:active {background-color: rgb(255, 64, 64);}
+      .minimize {
+        -webkit-app-region: no-drag;
+        width: 20px;
+        border-left: solid black 1px;
+        cursor: pointer;
+        background-image: url("~@/assets/minimize.png");
+        background-size: cover;
+        background-color: rgb(91, 94, 255);
+        &:hover {background-color: rgb(121, 123, 255);}
+        &:active {background-color: rgb(64, 77, 255);}
+      }
 
-      .x {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
+      .restore {
+        -webkit-app-region: no-drag;
+        width: 20px;
+        border-left: solid black 1px;
+        cursor: pointer;
+        background-image: url("~@/assets/restore.png");
+        background-size: cover;
+        background-color: rgb(91, 94, 255);
+        &:hover {background-color: rgb(121, 123, 255);}
+        &:active {background-color: rgb(64, 77, 255);}
+      }
+
+      .maximize {
+        -webkit-app-region: no-drag;
+        width: 20px;
+        border-left: solid black 1px;
+        cursor: pointer;
+        background-image: url("~@/assets/maximize.png");
+        background-size: cover;
+        background-color: rgb(91, 94, 255);
+        &:hover {background-color: rgb(121, 123, 255);}
+        &:active {background-color: rgb(64, 77, 255);}
+      }
+
+      .quit {
+        -webkit-app-region: no-drag;
+        width: 20px;
+        border-left: solid black 1px;
+        background-image: url("~@/assets/quit.png");
+        background-size: cover;
+        background-color: rgb(255, 91, 91);
+        cursor: pointer;
+
+        &:hover {background-color: rgb(255, 121, 121);}
+        &:active {background-color: rgb(255, 64, 64);}
       }
     }
+  }
+
+  #router-view {
+    display: flex;
+    overflow: auto;
+    flex-grow: 2;
   }
 }
 </style>

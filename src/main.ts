@@ -4,7 +4,7 @@ import IPC from "./ipc";
 
 const isDevelopment = (process.env.NODE_ENV !== "production");
 export let obj = {}; // A data object to share variables with custom imported files
-let win: any; // Global reference of BrowserWindow to prevent an automatic close when the JS object is garbage collected
+export let win: any; // Global reference of BrowserWindow to prevent an automatic close when the JS object is garbage collected
 
 // Scheme must be registered before the app is ready
 // protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
@@ -37,6 +37,10 @@ function CreateWindow() {
     win.setAlwaysOnTop(true);
     win.setAlwaysOnTop(false);
     win.webContents.openDevTools();
+  });
+
+  win.on("resize", () => {
+    win.send("IsMaximized", win.isMaximized());
   });
 
   win.on("closed", () => {

@@ -55,25 +55,21 @@ Vue.mixin({
         data: args
       });
     },
-
     Once: (ipcName: string, Callback: (response: any) => void) => {
       ipcRenderer.once(ipcName, (event: object, response: any) => {
         Callback(response);
       });
     },
-
     On: (ipcName: string, Callback: (response: any) => void) => {
       ipcRenderer.on(ipcName, (event: object, response: any) => {
         Callback(response);
       });
     },
-
     Read: function(key) {
       return this.$store.state[key]; // Retrieve data from the global data store
     },
-
     Write: function(key, val) {
-      this.$store.commit("Store", {key: key, val: val});
+      this.$store.commit("Store", {key: key, val: val}); // Writes data to the global data store
     }
   }
 });
