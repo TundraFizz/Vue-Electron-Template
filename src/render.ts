@@ -5,7 +5,6 @@ import VueCompositionApi from "@vue/composition-api";
 import App from "./app.vue";
 import Main from "./views/main.vue";
 import Settings from "./views/settings.vue";
-import About from "./views/about.vue";
 import {ipcRenderer} from "electron";
 
 Vue.use(Router);
@@ -25,11 +24,6 @@ const router = new Router({
     path: "/settings",
     name: "settings",
     component: Settings
-  },
-  {
-    path: "/about",
-    name: "about",
-    component: About
   }]
 });
 

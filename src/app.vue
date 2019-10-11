@@ -4,12 +4,6 @@
       <router-link tag="div" class="button" draggable="false" to="/">Main</router-link>
       <router-link tag="div" class="button" draggable="false" to="/settings">Settings</router-link>
       <router-link tag="div" class="button" draggable="false" to="/about">About</router-link>
-      <div class="right-container">
-        <div class="minimize" @click="Minimize"></div>
-        <div v-if="state.isMaximized" class="restore" @click="Restore"></div>
-        <div v-else class="maximize" @click="Maximize"></div>
-        <div class="quit" @click="Quit"></div>
-      </div>
     </div>
 
     <div id="router-view">
@@ -27,23 +21,8 @@ export default {
       isMaximized: false
     });
 
-    root.On("IsMaximized", (res: any) => {
-      state.isMaximized = res;
-    });
-
     return {
-      Minimize: () => {
-        root.Send("Minimize");
-      },
-      Restore: () => {
-        root.Send("Restore");
-      },
-      Maximize: () => {
-        root.Send("Maximize");
-      },
-      Quit: () => {
-        root.Send("Quit");
-      }
+      state
     };
   }
 };
