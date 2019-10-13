@@ -13,8 +13,7 @@ export let win: any; // Global reference of BrowserWindow to prevent an automati
 
 function CreateWindow() {
   console.log(app.getAppPath());
-  // const windowConfig: Electron.BrowserWindow = {
-    const windowConfig: Electron.BrowserWindowConstructorOptions = {
+  const windowConfig: Electron.BrowserWindowConstructorOptions = {
     width: 600,
     height: 500,
     show: false,
@@ -22,27 +21,12 @@ function CreateWindow() {
     resizable: true,
     webPreferences: {
       nodeIntegration: true,
-      // nodeIntegration: false,
-
-      nodeIntegrationInWorker: true,
-      // nodeIntegrationInWorker: false,
-
       contextIsolation: false,
-      // contextIsolation: true,
-
-      enableRemoteModule: true,
-      // enableRemoteModule: false,
-
+      nodeIntegrationInWorker: false,
+      enableRemoteModule: false,
       webSecurity: true,
       allowRunningInsecureContent: false,
-      experimentalFeatures: false,
-      preload: "file://" + __dirname + "preload.js" // path.join(app.getAppPath(), "preload.ts")
-
-      // T T F    => Does not work
-      // F T F    => Does not work
-      // T F F    => Works
-
-      // nodeIntegration: true
+      experimentalFeatures: false
     }
   };
 
